@@ -10,9 +10,9 @@ pip install opencv-python pygame
 import cv2
 from pygame import mixer
 import tkinter as tk
-from threading import Thread
 import time
 import os
+import sys
 
 # ---------- SONGS FOR EACH MOOD ----------
 MOOD_SONGS = {
@@ -38,12 +38,15 @@ def play_song(mood):
 
 # ---------- PHASE 2: FACE & MOOD DETECTION ----------
 def start_face_detection():
-    # Load OpenCV's pre-trained Haar cascades
     face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
     smile_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_smile.xml")
 
     cap = cv2.VideoCapture(0)
     print("[INFO] Starting mood detection using OpenCV...")
+
+    if not cap.isOpened():
+        print("[ERROR] Cannot access camera.")
+        return
 
     mood_detected = False
     start_time = time.time()
@@ -68,7 +71,6 @@ def start_face_detection():
             if len(smiles) > 0:
                 mood = "happy"
             else:
-                # Wait a few seconds before deciding neutral/sad
                 if time.time() - start_time > 5:
                     mood = "sad"
                 else:
@@ -93,10 +95,14 @@ def start_face_detection():
     cap.release()
     cv2.destroyAllWindows()
 
-# ---------- PHASE 1: HAND DETECTION (Basic Motion Detection) ----------
+# ---------- PHASE 1: HAND DETECTION ----------
 def start_hand_detection():
     print("[INFO] Show your hand in front of camera to continue...")
     cap = cv2.VideoCapture(0)
+
+    if not cap.isOpened():
+        print("[ERROR] Cannot access camera.")
+        return
 
     bg_subtractor = cv2.createBackgroundSubtractorMOG2(history=100, varThreshold=50)
     motion_detected = False
@@ -110,7 +116,6 @@ def start_hand_detection():
         frame = cv2.flip(frame, 1)
         fg_mask = bg_subtractor.apply(frame)
 
-        # Count nonzero pixels (movement)
         motion = cv2.countNonZero(fg_mask)
         h, w = frame.shape[:2]
         box_area = (h * w) // 15
@@ -135,6 +140,11 @@ def start_hand_detection():
 
 # ---------- GUI ----------
 def start_gui():
+    def proceed():
+        root.destroy()
+        # Restart this script to ensure OpenCV runs in the main thread
+        os.execv(sys.executable, ['python3'] + sys.argv + ['--start'])
+
     root = tk.Tk()
     root.title("AI Mood DJ")
     root.geometry("600x400")
@@ -145,10 +155,6 @@ def start_gui():
     tk.Label(root, text="Wave your hand & smile — AI will play your vibe!",
              bg="#111", fg="#ccc", font=("Poppins", 12)).pack(pady=10)
 
-    def proceed():
-        root.destroy()
-        Thread(target=start_hand_detection).start()
-
     tk.Button(root, text="Proceed", bg="#00bcd4", fg="white",
               font=("Poppins", 14, "bold"), relief="flat",
               padx=20, pady=10, command=proceed).pack(pady=50)
@@ -157,4 +163,7 @@ def start_gui():
 
 # ---------- RUN ----------
 if __name__ == "__main__":
-    start_gui()
+    if "--start" in sys.argv:
+        start_hand_detection()
+    else:
+        start_gui()
