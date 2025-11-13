@@ -1,0 +1,52 @@
+🧠 Slide 1: Title Slide
+Title: AI Mood DJ — Hand → Face → Music
+Subtitle: Let AI detect your emotions and play the perfect track
+Include:
+🎵 Abstract soundwave graphic
+💻 Your name and school
+🔹 Tech used: OpenCV | Python | Pygame
+Slide 2: Problem Statement
+"Music changes our mood — but what if our mood could change the music?"
+People often struggle to pick songs that match how they feel.
+Manual selection interrupts workflow or relaxation.
+Lack of emotional personalization in standard music apps.
+Need for emotion-aware automation to enhance digital experiences.
+🧩 Goal: Create a system that can detect a user’s emotional state in real time and play suitable music automatically.
+Slide 3: AI Solution (Concept / Prototype)
+Concept:
+AI Mood DJ combines computer vision and emotion recognition to detect how you feel using a webcam, then plays a song matching your vibe.
+Prototype Workflow:
+✋ Hand Detection → activates the system.
+😊 Face Detection → identifies emotion (happy, sad, neutral).
+🎶 Music Recommendation → auto-plays song based on mood.
+Tools Used:
+OpenCV (for video processing)
+Python (logic + integration)
+Pygame (for audio playback)
+Slide 4: Implementation Approach
+1. Data & Detection
+Haar Cascade classifiers detect face and smile.
+Frame-by-frame image analysis via OpenCV.
+Simple rule-based mood classification (smile = happy, no smile = sad).
+2. Architecture Flow:
+User → Camera Input → Emotion Detection → Mood Classifier → Music Output
+3. Interface:
+Built using Tkinter GUI
+Threaded process for smooth hand + face tracking
+Slide 5: Potential Impact
+Personal Use:
+Auto-curated music experience based on real emotions
+Mental wellness support through adaptive sound
+Educational Use:
+Demonstrates real-world AI and computer vision
+Encourages emotion-aware computing projects
+Technical Impact:
+Promotes lightweight AI applications without cloud dependency
+Slide 6: Business / Societal Value
+Business Value:
+Could be integrated into streaming apps like Spotify or Apple Music for emotion-driven playlists
+Opens scope for personalized advertising and recommendation systems
+Societal Value:
+Mood-based therapy or stress management through music
+Accessibility boost for visually impaired users (hands-free experience)
+Promotes human-AI emotional synergy
